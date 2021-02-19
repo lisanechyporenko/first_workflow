@@ -1,0 +1,17 @@
+---
+title: "first_RMD"
+author: "lisanechyporenko"
+date: "2021-02-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+data
+
+plot(mtcars$drat, mtcars$mpg)
+```
+
