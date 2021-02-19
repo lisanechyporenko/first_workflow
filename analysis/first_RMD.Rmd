@@ -15,3 +15,76 @@ data("mtcars")
 plot(mtcars$drat, mtcars$mpg)
 ```
 
+##Exercises
+
+Tasks:
+
+1. Create tables for Diagnosis.Age, Sex, Race.Category and American.Joint.Committee.on.Cancer.Tumor.Stage.Code
+
+Solution:
+```{r ex 1}
+library(tidyverse)
+
+luad_data <- read.delim("D:/Master/R_Kurs/Workflow/data/luad_tcga_pan_can_atlas_2018_clinical_data.tsv", header=TRUE)
+
+tab_1 <- luad_data %>% select(c("Diagnosis.Age","Sex","Race.Category","American.Joint.Committee.on.Cancer.Tumor.Stage.Code")) %>% table()
+
+```
+
+2. do chi-sq test for American.Joint.Committee.on.Cancer.Tumor.Stage.Code and Sex Plot the data (e.g. barplot, counts by gender)
+
+```{r ex 2}
+
+luad_data %>% filter(!is.na(Sex)) %>%  
+   ggplot(aes(Sex,fill=American.Joint.Committee.on.Cancer.Tumor.Stage.Code)) + geom_bar(position="dodge")
+
+tab_1 <- luad_data %>% select(c("Sex","American.Joint.Committee.on.Cancer.Tumor.Stage.Code")) %>% table()
+
+Chi_test <- chisq.test(tab_1)
+```
+
+3. do linear regression for the Mutation.Count and stage, gender and age. show the results in table. Plot the data.
+
+```{r ex 3}
+
+library(openintro)
+library(broom)
+
+```
+
+First compare Mutation count data with age:
+
+
+```{r}
+
+luad_age <- luad_data %>% select(c("Mutation.Count","Diagnosis.Age"))  %>% ggplot(aes(Diagnosis.Age,Mutation.Count)) 
+
+luad_age + geom_point() + geom_smooth(method = "lm", se = FALSE)
+
+m1 <- lm(Mutation.Count ~ Diagnosis.Age, data = luad_data)
+
+```
+
+Second compare Mutation count data with the stage:
+
+```{r}
+
+luad_stage <- luad_data %>% select(c("Mutation.Count","American.Joint.Committee.on.Cancer.Tumor.Stage.Code"))  %>% ggplot(aes(American.Joint.Committee.on.Cancer.Tumor.Stage.Code, Mutation.Count)) 
+
+luad_stage + geom_boxplot()
+
+m2 <- lm(Mutation.Count ~ American.Joint.Committee.on.Cancer.Tumor.Stage.Code, data = luad_data)
+
+```
+
+Third compare Mutation count data with the gender:
+
+```{r}
+
+luad_age <- luad_data %>% select(c("Mutation.Count","Sex"))  %>% filter(!is.na(Sex)) %>%  ggplot(aes(Sex, Mutation.Count), color = Sex) 
+
+luad_age + geom_boxplot()
+
+m3 <- lm(Mutation.Count ~ Sex, data = luad_data)
+
+```
